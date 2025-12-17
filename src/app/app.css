@@ -1,0 +1,58 @@
+:host {
+  --content-padding: 18px;
+}
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: var(--content-padding);
+  box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.08);
+  position: sticky;
+  top: 0;
+  background: #fff;
+  z-index: 10;
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.brand-logo {
+  height: 32px;
+  width: auto;
+}
+
+.nav {
+  display: flex;
+  gap: 14px;
+}
+
+.nav a {
+  text-decoration: none;
+  color: #26304d;
+  font-weight: 600;
+  padding: 8px 12px;
+  border-radius: 10px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.nav a:hover {
+  background: #f0f2ff;
+  color: #3847b5;
+}
+
+.nav a.active {
+  background: #e4e7ff;
+  color: #2b37a0;
+}
+
+.content {
+  padding: var(--content-padding);
+  max-width: 1100px;
+  margin: 0 auto;
+}

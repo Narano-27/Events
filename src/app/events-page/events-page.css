@@ -1,0 +1,37 @@
+.page-hero {
+  padding: 40px 0 20px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 12px;
+  color: #5e6ad2;
+  margin: 0 0 8px;
+}
+
+.page-hero h1 {
+  margin: 0 0 6px;
+  font-size: 32px;
+}
+
+.page-hero .sub {
+  margin: 0;
+  color: #5b6477;
+}
+
+.results-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 20px;
+}
+
+.empty {
+  padding: 24px;
+  border: 1px dashed #c5c8d4;
+  border-radius: 12px;
+  color: #5b6477;
+}

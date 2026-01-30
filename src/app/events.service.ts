@@ -12,14 +12,18 @@ export class EventsService {
   private readonly http = inject(HttpClient);
 
   getAllEvents(page = 0, size = 20, sort = 'label,asc'): Observable<Event[]> {
+    return this.getEventsPage(page, size, sort).pipe(map((res) => res.content ?? []));
+  }
+
+  getEventsPage(page = 0, size = 20, sort = 'label,asc'): Observable<EventPage> {
     const params = new HttpParams()
       .set('page', page)
       .set('size', size)
       .set('sort', sort);
 
     return this.http
-      .get<PageEvent>(`${this.apiBase}/events`, {params})
-      .pipe(map((res) => res.content ?? []));
+      .get<EventPage>(`${this.apiBase}/events`, {params})
+      .pipe(map((res) => ({...res, content: res.content ?? []})));
   }
 
   getEventById(id: string): Observable<Event> {
@@ -27,7 +31,7 @@ export class EventsService {
   }
 }
 
-interface PageEvent {
+export interface EventPage {
   content?: Event[];
   totalElements?: number;
   totalPages?: number;

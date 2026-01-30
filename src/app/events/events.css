@@ -19,12 +19,28 @@
 .listing-location::before {
   content: url("/assets/location-pin.svg") / "";
 }
-section.listing a {
-  padding-left: 20px;
+.listing-link {
   text-decoration: none;
   color: var(--primary-color);
 }
-section.listing a::after {
+
+.listing-actions a::after {
   content: "\203A";
   margin-left: 5px;
+}
+
+.listing-actions {
+  padding: 0 20px 20px;
+}
+
+.listing-actions a {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: #ffffff;
+  color: var(--primary-color);
+  font-weight: 600;
 }

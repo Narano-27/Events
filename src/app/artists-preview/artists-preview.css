@@ -1,0 +1,28 @@
+.artists {
+  padding: 0 20px 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.artists-count {
+  margin: 0;
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.artists-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  color: #5b6477;
+  font-size: 14px;
+}
+
+.artists-more {
+  color: #5e6ad2;
+  font-weight: 600;
+}

@@ -1,5 +1,6 @@
 import {Component, inject} from '@angular/core';
 import {CommonModule} from '@angular/common';
+import {RouterLink} from '@angular/router';
 import {BehaviorSubject, Observable, switchMap} from 'rxjs';
 import {EventPage, EventsService} from '../events.service';
 import {Events} from '../events/events';
@@ -7,7 +8,7 @@ import {Events} from '../events/events';
 @Component({
   selector: 'app-events-page',
   standalone: true,
-  imports: [CommonModule, Events],
+  imports: [CommonModule, Events, RouterLink],
   template: `
     <section class="page-hero">
       <div>
@@ -15,6 +16,7 @@ import {Events} from '../events/events';
         <h1>Explore upcoming events</h1>
         <p class="sub">Fetched directly from the API.</p>
       </div>
+      <a routerLink="/events/new" class="create-btn">+ Create Event</a>
     </section>
     @if (eventsPage$ | async; as page) {
       <section class="results-grid">

@@ -11,11 +11,11 @@ interface ArtistPreview {
   standalone: true,
   imports: [CommonModule],
   template: `
-    @if (artistsCount() > 0) {
-      <div class="artists">
-        <p class="artists-count">
-          {{ artistsCount() }} artist{{ artistsCount() > 1 ? 's' : '' }}
-        </p>
+    <div class="artists">
+      <p class="artists-count">
+        {{ artistsCount() }} artist{{ artistsCount() > 1 ? 's' : '' }}
+      </p>
+      @if (artistsCount() > 0) {
         <ul class="artists-list">
           @for (artist of previewArtists(); track artist.id) {
             <li>{{ artist.label }}</li>
@@ -24,8 +24,10 @@ interface ArtistPreview {
             <li class="artists-more">+{{ artistsCount() - max() }} others</li>
           }
         </ul>
-      </div>
-    }
+      } @else {
+        <p class="artists-none">No artists</p>
+      }
+    </div>
   `,
   styleUrls: ['./artists-preview.css'],
 })

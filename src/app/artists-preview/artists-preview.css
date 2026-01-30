@@ -26,3 +26,10 @@
   color: #5e6ad2;
   font-weight: 600;
 }
+
+.artists-none {
+  margin: 0;
+  color: #5b6477;
+  font-size: 14px;
+  font-style: italic;
+}

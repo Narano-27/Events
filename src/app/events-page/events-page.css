@@ -1,8 +1,9 @@
 .page-hero {
   padding: 40px 0 20px;
   display: flex;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
+  gap: 20px;
 }
 
 .eyebrow {
@@ -75,4 +76,19 @@
 .page-indicator {
   color: #5b6477;
   font-size: 14px;
+}
+
+.create-btn {
+  padding: 10px 20px;
+  background: #5e6ad2;
+  color: #ffffff;
+  text-decoration: none;
+  border-radius: 10px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: background 0.2s ease;
+}
+
+.create-btn:hover {
+  background: #4c5bc4;
 }

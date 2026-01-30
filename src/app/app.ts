@@ -15,6 +15,7 @@ import {RouterOutlet, RouterLink, RouterLinkActive} from '@angular/router';
         <nav class="nav">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
           <a routerLink="/events" routerLinkActive="active">Events</a>
+          <a routerLink="/artists" routerLinkActive="active">Artists</a>
         </nav>
       </header>
       <section class="content">

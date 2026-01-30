@@ -67,6 +67,38 @@ export class EventsService {
   updateEvent(id: string, event: Partial<Event>): Observable<Event> {
     return this.http.put<Event>(`${this.apiBase}/events/${id}`, event);
   }
+
+  // Artist methods
+  getArtistsPage(page = 0, size = 20, sort = 'label,asc'): Observable<ArtistPage> {
+    const params = new HttpParams()
+      .set('page', page)
+      .set('size', size)
+      .set('sort', sort);
+
+    return this.http
+      .get<ArtistPage>(`${this.apiBase}/artists`, {params})
+      .pipe(map((res) => ({...res, content: res.content ?? []})));
+  }
+
+  createArtist(artist: {label: string}): Observable<Artist> {
+    return this.http.post<Artist>(`${this.apiBase}/artists`, artist);
+  }
+
+  getArtistById(id: string): Observable<Artist> {
+    return this.http.get<Artist>(`${this.apiBase}/artists/${id}`);
+  }
+
+  updateArtist(id: string, artist: Partial<Artist>): Observable<Artist> {
+    return this.http.put<Artist>(`${this.apiBase}/artists/${id}`, artist);
+  }
+
+  deleteArtist(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiBase}/artists/${id}`);
+  }
+
+  getArtistEvents(artistId: string): Observable<Event[]> {
+    return this.http.get<Event[]>(`${this.apiBase}/artists/${artistId}/events`);
+  }
 }
 
 export interface EventPage {
@@ -80,8 +112,13 @@ export interface EventPage {
   numberOfElements?: number;
 }
 
-interface ArtistPage {
+export interface ArtistPage {
   content?: Artist[];
   totalElements?: number;
   totalPages?: number;
+  size?: number;
+  number?: number;
+  first?: boolean;
+  last?: boolean;
+  numberOfElements?: number;
 }

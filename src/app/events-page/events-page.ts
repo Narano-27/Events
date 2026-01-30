@@ -24,7 +24,7 @@ import {Events} from '../events/events';
           <div class="empty">No events yet. Create one in the API to see it here.</div>
         } @else {
           @for (e of page.content ?? []; track e.id) {
-            <app-events [event]="e" />
+            <app-events [event]="e" (delete)="onDeleteEvent($event)" />
           }
         }
       </section>
@@ -95,5 +95,16 @@ export class EventsPage {
 
   pageNumbers(totalPages: number): number[] {
     return Array.from({length: totalPages}, (_, i) => i);
+  }
+
+  onDeleteEvent(eventId: string): void {
+    this.eventsService.deleteEvent(eventId).subscribe({
+      next: () => {
+        this.page$.next(this.currentPage);
+      },
+      error: (err) => {
+        console.error('Error deleting event:', err);
+      },
+    });
   }
 }

@@ -55,6 +55,18 @@ export class EventsService {
   addArtistToEvent(eventId: string, artistId: string): Observable<Event> {
     return this.http.post<Event>(`${this.apiBase}/events/${eventId}/artists/${artistId}`, {});
   }
+
+  removeArtistFromEvent(eventId: string, artistId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiBase}/events/${eventId}/artists/${artistId}`);
+  }
+
+  deleteEvent(id: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiBase}/events/${id}`);
+  }
+
+  updateEvent(id: string, event: Partial<Event>): Observable<Event> {
+    return this.http.put<Event>(`${this.apiBase}/events/${id}`, event);
+  }
 }
 
 export interface EventPage {

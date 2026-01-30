@@ -1,22 +1,26 @@
-import {Component} from '@angular/core';
+import {Component, signal, effect} from '@angular/core';
 import {RouterOutlet, RouterLink, RouterLinkActive} from '@angular/router';
+import {LanguageSelector} from './language-selector/language-selector';
+import {LanguageService} from './language.service';
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LanguageSelector],
   template: `
     <main>
-      <header class="brand-name">
-        <div class="logo-wrap">
+      <header>
+        <div class="header-left">
           <img class="brand-logo" src="/assets/logo.svg" alt="logo" aria-hidden="true" />
-          <span class="brand-text">Evently</span>
+          <nav class="nav">
+            <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">{{ t('nav.home') }}</a>
+            <a routerLink="/events" routerLinkActive="active">{{ t('nav.events') }}</a>
+            <a routerLink="/artists" routerLinkActive="active">{{ t('nav.artists') }}</a>
+          </nav>
         </div>
-        <nav class="nav">
-          <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Home</a>
-          <a routerLink="/events" routerLinkActive="active">Events</a>
-          <a routerLink="/artists" routerLinkActive="active">Artists</a>
-        </nav>
+        <div class="header-right">
+          <app-language-selector />
+        </div>
       </header>
       <section class="content">
         <router-outlet />
@@ -25,4 +29,16 @@ import {RouterOutlet, RouterLink, RouterLinkActive} from '@angular/router';
   `,
   styleUrls: ['./app.css'],
 })
-export class App {}
+export class App {
+  translations = signal(this.languageService.getTranslations());
+
+  constructor(private languageService: LanguageService) {
+    effect(() => {
+      this.translations.set(this.languageService.getTranslations());
+    });
+  }
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
+}

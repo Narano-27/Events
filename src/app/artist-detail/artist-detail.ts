@@ -1,26 +1,34 @@
 import {Component, inject, computed} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ActivatedRoute, RouterLink} from '@angular/router';
+import {ActivatedRoute, RouterLink, Router} from '@angular/router';
 import {Observable, of, switchMap} from 'rxjs';
 import {EventsService} from '../events.service';
 import {Artist} from '../artist';
 import {Event} from '../event';
+import {signal} from '@angular/core';
+import {LanguageService} from '../language.service';
 
 @Component({
   selector: 'app-artist-detail',
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
-    <a class="back-link" routerLink="/artists">← Back to artists</a>
+    <a class="back-link" routerLink="/artists">{{ t('artists.backToArtists') }}</a>
 
     @if (artist$ | async; as artist) {
       <section class="detail">
-        <h1>{{ artist.label }}</h1>
+        <div class="detail-header">
+          <h1>{{ artist.label }}</h1>
+          <div class="detail-actions">
+            <a [routerLink]="['/artists', artist.id, 'edit']" class="btn-edit">{{ t('artists.edit') }}</a>
+            <button (click)="onDelete(artist.id, artist.label)" class="btn-delete">{{ t('artists.delete') }}</button>
+          </div>
+        </div>
 
         @if ((upcomingEvents$ | async)?.length ?? false) {
           <section class="events-section upcoming">
             @if (upcomingEvents$ | async; as upcoming) {
-              <h2>Upcoming Events ({{ upcoming.length }})</h2>
+              <h2>{{ t('artists.upcomingEvents') }} ({{ upcoming.length }})</h2>
               <div class="events-list">
                 @for (event of upcoming; track event.id) {
                   <div class="event-card">
@@ -36,7 +44,7 @@ import {Event} from '../event';
         @if ((pastEvents$ | async)?.length ?? false) {
           <section class="events-section past">
             @if (pastEvents$ | async; as past) {
-              <h2>Past Events ({{ past.length }})</h2>
+              <h2>{{ t('artists.pastEvents') }} ({{ past.length }})</h2>
               <div class="events-list">
                 @for (event of past; track event.id) {
                   <div class="event-card">
@@ -50,11 +58,11 @@ import {Event} from '../event';
         }
 
         @if (!((upcomingEvents$ | async)?.length ?? false) && !((pastEvents$ | async)?.length ?? false)) {
-          <div class="no-events">No events associated with this artist.</div>
+          <div class="no-events">{{ t('artists.noEventsAssociated') }}</div>
         }
       </section>
     } @else {
-      <div class="empty">Artist not found.</div>
+      <div class="empty">{{ t('artists.artistNotFound') }}</div>
     }
   `,
   styleUrls: ['./artist-detail.css'],
@@ -62,6 +70,12 @@ import {Event} from '../event';
 export class ArtistDetail {
   private eventsService = inject(EventsService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
+  private languageService = inject(LanguageService);
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
 
   artist$: Observable<Artist | null> = this.route.paramMap.pipe(
     switchMap((params) => {
@@ -94,4 +108,18 @@ export class ArtistDetail {
   hasEvents$ = this.allEvents$.pipe(
     switchMap((events) => of(events.length > 0)),
   );
+
+  onDelete(artistId: string, artistLabel: string): void {
+    if (confirm(`${this.t('artists.deleteConfirm')} "${artistLabel}"?`)) {
+      this.eventsService.deleteArtist(artistId).subscribe({
+        next: () => {
+          this.router.navigate(['/artists']);
+        },
+        error: (err) => {
+          console.error('Error deleting artist:', err);
+          alert(this.t('artists.deleteError'));
+        },
+      });
+    }
+  }
 }

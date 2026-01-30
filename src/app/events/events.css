@@ -1,22 +1,45 @@
 .listing {
-  background: var(--accent-color);
-  border-radius: 30px;
-  padding-bottom: 30px;
+  background: white;
+  border-radius: 16px;
+  padding: 0;
   position: relative;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.listing:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 24px rgba(96, 93, 200, 0.15);
+  border-color: rgba(96, 93, 200, 0.3);
+}
+
+.listing::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #605DC8 0%, #8B89E6 100%);
 }
 
 .listing-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 10px 20px 0 20px;
+  padding: 20px 20px 0 20px;
   gap: 10px;
+  background: linear-gradient(135deg, #f9f9ff 0%, #ffffff 100%);
 }
 
 .listing-heading {
-  color: var(--primary-color);
+  color: #26304d;
   margin: 0;
   flex: 1;
+  font-size: 18px;
+  font-weight: 700;
 }
 .listing-photo {
   height: 250px;
@@ -26,18 +49,61 @@
 }
 .listing-location {
   padding: 10px 20px 20px 20px;
+  color: #7a8199;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
+
 .listing-location::before {
-  content: url("/assets/location-pin.svg") / "";
+  content: "📅";
+  font-size: 16px;
 }
+
 .listing-link {
   text-decoration: none;
-  color: var(--primary-color);
+  color: #26304d;
+  transition: color 0.2s ease;
+}
+
+.listing-link:hover {
+  color: #605DC8;
+}
+
+.listing-actions {
+  padding: 0 20px 20px 20px;
+  border-top: 1px solid #f0f2f5;
+  padding-top: 16px;
+  margin-top: 8px;
+}
+
+.listing-actions a {
+  color: #605DC8;
+  font-weight: 600;
+  font-size: 14px;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: all 0.2s ease;
+  padding: 6px 12px;
+  border-radius: 8px;
+}
+
+.listing-actions a:hover {
+  background: rgba(96, 93, 200, 0.08);
+  color: #4b48a8;
 }
 
 .listing-actions a::after {
-  content: "\203A";
-  margin-left: 5px;
+  content: "→";
+  transition: transform 0.2s ease;
+}
+
+.listing-actions a:hover::after {
+  transform: translateX(4px);
 }
 
 .actions-menu {
@@ -47,18 +113,19 @@
 .menu-toggle {
   background: none;
   border: none;
-  padding: 4px;
+  padding: 6px;
   cursor: pointer;
-  color: var(--primary-color);
+  color: #5b6477;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
-  transition: background 0.2s ease;
+  border-radius: 8px;
+  transition: all 0.2s ease;
 }
 
 .menu-toggle:hover {
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(96, 93, 200, 0.1);
+  color: #605DC8;
 }
 
 .dropdown-menu {

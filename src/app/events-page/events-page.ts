@@ -4,6 +4,7 @@ import {RouterLink} from '@angular/router';
 import {BehaviorSubject, Observable, switchMap} from 'rxjs';
 import {EventPage, EventsService} from '../events.service';
 import {Events} from '../events/events';
+import {LanguageService} from '../language.service';
 
 @Component({
   selector: 'app-events-page',
@@ -12,16 +13,16 @@ import {Events} from '../events/events';
   template: `
     <section class="page-hero">
       <div>
-        <p class="eyebrow">Events</p>
-        <h1>Explore upcoming events</h1>
-        <p class="sub">Fetched directly from the API.</p>
+        <p class="eyebrow">{{ t('events.title') }}</p>
+        <h1>{{ t('events.exploreUpcoming') }}</h1>
+        <p class="sub">{{ t('events.fetchedFromApi') }}</p>
       </div>
-      <a routerLink="/events/new" class="create-btn">+ Create Event</a>
+      <a routerLink="/events/new" class="create-btn">{{ t('events.createEvent') }}</a>
     </section>
     @if (eventsPage$ | async; as page) {
       <section class="results-grid">
         @if ((page.content?.length ?? 0) === 0) {
-          <div class="empty">No events yet. Create one in the API to see it here.</div>
+          <div class="empty">{{ t('events.noEventsYet') }}</div>
         } @else {
           @for (e of page.content ?? []; track e.id) {
             <app-events [event]="e" (delete)="onDeleteEvent($event)" />
@@ -32,7 +33,7 @@ import {Events} from '../events/events';
       @if ((page.totalPages ?? 0) > 1) {
         <nav class="pagination" aria-label="Event pages">
           <button type="button" (click)="prevPage()" [disabled]="currentPage === 0">
-            Previous
+            {{ t('common.previous') }}
           </button>
           <div class="pages">
             @for (p of pageNumbers(page.totalPages ?? 0); track p) {
@@ -51,9 +52,9 @@ import {Events} from '../events/events';
             (click)="nextPage(page.totalPages ?? 0)"
             [disabled]="currentPage >= (page.totalPages ?? 1) - 1"
           >
-            Next
+            {{ t('common.next') }}
           </button>
-          <span class="page-indicator">Page {{ currentPage + 1 }} / {{ page.totalPages ?? 1 }}</span>
+          <span class="page-indicator">{{ t('common.page') }} {{ currentPage + 1 }} / {{ page.totalPages ?? 1 }}</span>
         </nav>
       }
     }
@@ -64,9 +65,14 @@ export class EventsPage {
   eventsPage$: Observable<EventPage>;
   private page$ = new BehaviorSubject<number>(0);
   private eventsService = inject(EventsService);
+  private languageService = inject(LanguageService);
   currentPage = 0;
   readonly pageSize = 10;
   readonly sort = 'label,asc';
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
 
   constructor() {
     this.eventsPage$ = this.page$.pipe(

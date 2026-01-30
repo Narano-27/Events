@@ -7,21 +7,22 @@ import {EventsService} from '../events.service';
 import {Event} from '../event';
 import {Artist} from '../artist';
 import {signal} from '@angular/core';
+import {LanguageService} from '../language.service';
 
 @Component({
   selector: 'app-event-edit',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <a class="back-link" routerLink="/events">← Back to events</a>
+    <a class="back-link" routerLink="/events">{{ t('events.backToEvents') }}</a>
 
     @if (event$ | async; as event) {
       <section class="form-container">
-        <h1>Edit Event</h1>
+        <h1>{{ t('events.edit') }} {{ t('events.title') }}</h1>
 
         <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
           <div class="form-group">
-            <label for="label">Event Name *</label>
+            <label for="label">{{ t('events.eventName') }} *</label>
             <input
               type="text"
               id="label"
@@ -34,7 +35,7 @@ import {signal} from '@angular/core';
 
           <div class="form-row">
             <div class="form-group">
-              <label for="startDate">Start Date *</label>
+              <label for="startDate">{{ t('events.startDate') }} *</label>
               <input
                 type="date"
                 id="startDate"
@@ -45,7 +46,7 @@ import {signal} from '@angular/core';
             </div>
 
             <div class="form-group">
-              <label for="endDate">End Date *</label>
+              <label for="endDate">{{ t('events.endDate') }} *</label>
               <input
                 type="date"
                 id="endDate"
@@ -66,24 +67,24 @@ import {signal} from '@angular/core';
 
           <div class="form-actions">
             <button type="submit" [disabled]="!eventForm.form.valid || isSubmitting()">
-              {{ isSubmitting() ? 'Saving...' : 'Save Changes' }}
+              {{ isSubmitting() ? t('events.saving') : t('events.saveChanges') }}
             </button>
             <button type="button" class="btn-danger" (click)="onDelete()">
-              Delete Event
+              {{ t('events.delete') }}
             </button>
           </div>
         </form>
 
         <section class="artist-section">
-          <h2>Manage Artists</h2>
-          <p class="info">Add or remove artists from this event</p>
+          <h2>{{ t('events.manageArtists') }}</h2>
+          <p class="info">{{ t('events.manageArtistsInfo') }}</p>
 
           <div class="search-container">
             <input
               type="text"
               [(ngModel)]="artistSearchTerm"
               (input)="onSearchArtist()"
-              placeholder="Search artist by name..."
+              [placeholder]="t('events.searchArtists')"
               class="search-input"
             />
           </div>
@@ -98,7 +99,7 @@ import {signal} from '@angular/core';
                     (click)="addArtistToEvent(artist)"
                     [disabled]="isAddingArtist() || addedArtistIds().includes(artist.id)"
                   >
-                    {{ addedArtistIds().includes(artist.id) ? '✓ Added' : 'Add' }}
+                    {{ addedArtistIds().includes(artist.id) ? t('events.added') : t('events.add') }}
                   </button>
                 </li>
               }
@@ -106,12 +107,12 @@ import {signal} from '@angular/core';
           }
 
           @if (artistSearchTerm.length > 0 && artistSearchResults().length === 0 && !isSearching()) {
-            <div class="no-results">No artists found with that name</div>
+            <div class="no-results">{{ t('events.noArtistsFound') }}</div>
           }
 
           @if ((event.artists?.length ?? 0) > 0) {
             <div class="current-artists">
-              <h3>Current Artists ({{ event.artists?.length }})</h3>
+              <h3>{{ t('events.currentArtists') }} ({{ event.artists?.length }})</h3>
               <ul>
                 @for (artist of event.artists ?? []; track artist.id) {
                   <li class="artist-item">
@@ -136,7 +137,7 @@ import {signal} from '@angular/core';
         </section>
       </section>
     } @else {
-      <div class="empty">Event not found.</div>
+      <div class="empty">{{ t('events.eventNotFound') }}</div>
     }
   `,
   styleUrls: ['./event-edit.css'],
@@ -145,6 +146,15 @@ export class EventEdit {
   private eventsService = inject(EventsService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private languageService = inject(LanguageService);
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
+
+  getCurrentLanguage() {
+    return this.languageService.getCurrentLanguage();
+  }
 
   event$: Observable<Event | null> = this.route.paramMap.pipe(
     switchMap((params) => {
@@ -189,15 +199,35 @@ export class EventEdit {
     if (!this.currentEventId) return;
     this.errorMessage.set('');
     this.successMessage.set('');
+    
+    // Validate name length
+    if (this.formData.label.trim().length < 3) {
+      this.errorMessage.set(this.t('events.nameMinLength'));
+      return;
+    }
+    
+    // Validate dates
+    const startDate = new Date(this.formData.startDate);
+    const endDate = new Date(this.formData.endDate);
+    
+    if (startDate > endDate) {
+      this.errorMessage.set(
+        this.getCurrentLanguage() === 'fr' 
+          ? 'La date de début doit être antérieure à la date de fin.'
+          : 'Start date must be before end date.'
+      );
+      return;
+    }
+    
     this.isSubmitting.set(true);
 
     this.eventsService.updateEvent(this.currentEventId, this.formData).subscribe({
       next: () => {
-        this.successMessage.set('Event updated successfully!');
+        this.successMessage.set(this.t('events.updateSuccess'));
         this.isSubmitting.set(false);
       },
       error: (err) => {
-        this.errorMessage.set('Failed to update event. Please try again.');
+        this.errorMessage.set(this.t('events.updateError'));
         this.isSubmitting.set(false);
         console.error('Error updating event:', err);
       },
@@ -206,13 +236,13 @@ export class EventEdit {
 
   onDelete(): void {
     if (!this.currentEventId) return;
-    if (confirm(`Are you sure you want to delete "${this.formData.label}"?`)) {
+    if (confirm(`${this.t('events.deleteConfirm')} "${this.formData.label}"?`)) {
       this.eventsService.deleteEvent(this.currentEventId).subscribe({
         next: () => {
           this.router.navigate(['/events']);
         },
         error: (err) => {
-          this.errorMessage.set('Failed to delete event. Please try again.');
+          this.errorMessage.set(this.t('events.deleteError'));
           console.error('Error deleting event:', err);
         },
       });
@@ -251,7 +281,7 @@ export class EventEdit {
         this.isAddingArtist.set(false);
       },
       error: (err) => {
-        this.artistError.set(`Failed to add artist "${artist.label}". Please try again.`);
+        this.artistError.set(this.t('events.addArtistError'));
         this.isAddingArtist.set(false);
         console.error('Error adding artist to event:', err);
       },
@@ -268,11 +298,29 @@ export class EventEdit {
       next: () => {
         this.addedArtistIds.update((ids) => ids.filter((id) => id !== artistId));
         this.isRemovingArtist.set(false);
+        // Refresh event data to update UI
+        this.refreshEvent();
       },
       error: (err) => {
-        this.artistError.set('Failed to remove artist. Please try again.');
+        this.artistError.set(this.t('events.removeArtistError'));
         this.isRemovingArtist.set(false);
         console.error('Error removing artist from event:', err);
+      },
+    });
+  }
+
+  private refreshEvent(): void {
+    if (!this.currentEventId) return;
+    this.eventsService.getEventById(this.currentEventId).subscribe({
+      next: (event) => {
+        if (event) {
+          this.addedArtistIds.set(event.artists?.map((a) => a.id) ?? []);
+          // Force re-render by updating the observable
+          this.event$ = of(event);
+        }
+      },
+      error: (err) => {
+        console.error('Error refreshing event:', err);
       },
     });
   }

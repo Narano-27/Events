@@ -52,6 +52,20 @@ export class EventsService {
     );
   }
 
+  searchEventsByName(name: string): Observable<Event[]> {
+    return this.getAllEvents(0, 100).pipe(
+      map((events) => events.filter((e) => e.label.toLowerCase().includes(name.toLowerCase())))
+    );
+  }
+
+  addEventToArtist(artistId: string, eventId: string): Observable<Artist> {
+    return this.http.post<Artist>(`${this.apiBase}/artists/${artistId}/events/${eventId}`, {});
+  }
+
+  removeEventFromArtist(artistId: string, eventId: string): Observable<void> {
+    return this.http.delete<void>(`${this.apiBase}/artists/${artistId}/events/${eventId}`);
+  }
+
   addArtistToEvent(eventId: string, artistId: string): Observable<Event> {
     return this.http.post<Event>(`${this.apiBase}/events/${eventId}/artists/${artistId}`, {});
   }

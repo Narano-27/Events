@@ -1,23 +1,242 @@
-.home-hero {
-  padding: 80px 0;
-  text-align: center;
-}
-
-.home-hero h1 {
-  font-size: 42px;
-  margin: 12px 0 8px;
-}
-
-.home-hero .sub {
-  color: #5b6477;
+.home-container {
+  max-width: 1400px;
   margin: 0 auto;
-  max-width: 560px;
+  padding: 20px;
 }
 
-.eyebrow {
+.hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 60px;
+  align-items: center;
+  padding: 60px 0 80px;
+  min-height: 500px;
+}
+
+.hero-content {
+  animation: fadeInUp 0.8s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.badge {
+  display: inline-block;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, rgba(96, 93, 200, 0.1) 0%, rgba(139, 137, 230, 0.1) 100%);
+  color: #605DC8;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.08em;
-  font-size: 12px;
-  color: #5e6ad2;
+  letter-spacing: 0.5px;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 52px;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 20px;
+  background: linear-gradient(135deg, #605DC8 0%, #8B89E6 50%, #FF6B9D 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.subtitle {
+  font-size: 20px;
+  color: #5b6477;
+  margin: 0 0 16px;
+  font-weight: 500;
+}
+
+.description {
+  font-size: 16px;
+  color: #7a8199;
+  line-height: 1.6;
+  margin: 0 0 32px;
+  max-width: 540px;
+}
+
+.cta-buttons {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: 15px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #605DC8 0%, #8B89E6 100%);
+  color: white;
+  box-shadow: 0 4px 14px rgba(96, 93, 200, 0.3);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(96, 93, 200, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn-secondary {
+  background: white;
+  color: #605DC8;
+  border: 2px solid #605DC8;
+}
+
+.btn-secondary:hover {
+  background: #605DC8;
+  color: white;
+  transform: translateY(-2px);
+}
+
+.hero-visual {
+  position: relative;
+  height: 400px;
+}
+
+.floating-card {
+  position: absolute;
+  background: white;
+  border-radius: 20px;
+  padding: 24px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.card-1 {
+  top: 50px;
+  left: 50px;
+  animation-delay: 0s;
+}
+
+.card-2 {
+  top: 180px;
+  right: 80px;
+  animation-delay: 0.5s;
+}
+
+.card-3 {
+  bottom: 50px;
+  left: 120px;
+  animation-delay: 1s;
+}
+
+.card-icon {
+  width: 80px;
+  height: 80px;
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card-icon.calendar {
+  background: linear-gradient(135deg, #605DC8 0%, #8B89E6 100%);
+}
+
+.card-icon.music {
+  background: linear-gradient(135deg, #8B89E6 0%, #FF6B9D 100%);
+}
+
+.card-icon.link {
+  background: linear-gradient(135deg, #FF6B9D 0%, #FFA07A 100%);
+}
+
+.features {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 32px;
+  padding: 40px 0;
+  margin-top: 40px;
+}
+
+.feature {
+  text-align: center;
+  padding: 32px 24px;
+  background: white;
+  border-radius: 16px;
+  border: 1px solid #e8e7fa;
+  transition: all 0.3s ease;
+}
+
+.feature:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 24px rgba(96, 93, 200, 0.15);
+  border-color: #605DC8;
+}
+
+.feature-icon {
+  margin: 0 auto 20px;
+  width: 80px;
+  height: 80px;
+  background: #f9f9ff;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+}
+
+.feature:hover .feature-icon {
+  background: linear-gradient(135deg, rgba(96, 93, 200, 0.1) 0%, rgba(139, 137, 230, 0.1) 100%);
+  transform: scale(1.1);
+}
+
+.feature h3 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #26304d;
+  margin: 0 0 12px;
+}
+
+.feature p {
+  font-size: 15px;
+  color: #7a8199;
+  line-height: 1.6;
   margin: 0;
+}
+
+@media (max-width: 968px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 40px;
+  }
+  
+  .hero-visual {
+    height: 300px;
+  }
+  
+  .title {
+    font-size: 38px;
+  }
 }

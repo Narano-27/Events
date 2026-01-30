@@ -1,0 +1,66 @@
+.language-selector {
+  position: relative;
+}
+
+.lang-button {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: 1px solid #e0e4f0;
+  background: white;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 18px;
+  transition: all 0.2s ease;
+}
+
+.lang-button:hover {
+  border-color: #605DC8;
+  background: #f9f9ff;
+}
+
+.lang-button svg {
+  color: #5b6477;
+}
+
+.dropdown {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  background: white;
+  border: 1px solid #e0e4f0;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  min-width: 150px;
+  z-index: 100;
+}
+
+.lang-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 14px;
+  border: none;
+  background: white;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background 0.2s ease;
+  text-align: left;
+}
+
+.lang-option:hover {
+  background: #f9f9ff;
+}
+
+.lang-option.active {
+  background: #e4e7ff;
+  font-weight: 600;
+}
+
+.flag {
+  font-size: 20px;
+  line-height: 1;
+}

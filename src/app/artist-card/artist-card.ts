@@ -1,7 +1,8 @@
-import {Component, input, signal, output} from '@angular/core';
+import {Component, input, signal, output, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {Artist as ArtistInterface} from '../artist';
+import {LanguageService} from '../language.service';
 
 @Component({
   selector: 'app-artist',
@@ -24,17 +25,17 @@ import {Artist as ArtistInterface} from '../artist';
           @if (showMenu()) {
             <div class="dropdown-menu">
               <a [routerLink]="['/artists', artist().id, 'edit']" (click)="closeMenu()" class="menu-item edit">
-                Edit
+                {{ t('artists.edit') }}
               </a>
               <button (click)="onDelete()" class="menu-item delete">
-                Delete
+                {{ t('artists.delete') }}
               </button>
             </div>
           }
         </div>
       </div>
       <div class="listing-actions">
-        <a [routerLink]="['/artists', artist().id]">View profile</a>
+        <a [routerLink]="['/artists', artist().id]">{{ t('artists.viewProfile') }}</a>
       </div>
     </section>
   `,
@@ -44,8 +45,13 @@ import {Artist as ArtistInterface} from '../artist';
 export class Artist {
   artist = input.required<ArtistInterface>();
   delete = output<string>();
+  private languageService = inject(LanguageService);
   
   showMenu = signal(false);
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
 
   toggleMenu(): void {
     this.showMenu.update((v) => !v);
@@ -56,7 +62,7 @@ export class Artist {
   }
 
   onDelete(): void {
-    if (confirm(`Are you sure you want to delete "${this.artist().label}"?`)) {
+    if (confirm(`${this.t('artists.deleteConfirm')} "${this.artist().label}"?`)) {
       this.closeMenu();
       this.delete.emit(this.artist().id);
     }

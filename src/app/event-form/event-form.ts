@@ -4,20 +4,21 @@ import {FormsModule} from '@angular/forms';
 import {Router, RouterLink} from '@angular/router';
 import {EventsService} from '../events.service';
 import {Artist} from '../artist';
+import {LanguageService} from '../language.service';
 
 @Component({
   selector: 'app-event-form',
   standalone: true,
   imports: [CommonModule, FormsModule, RouterLink],
   template: `
-    <a class="back-link" routerLink="/events">← Back to events</a>
+    <a class="back-link" routerLink="/events">{{ t('events.backToEvents') }}</a>
     
     <section class="form-container">
-      <h1>Create Event</h1>
+      <h1>{{ t('events.newEvent') }}</h1>
       
       <form (ngSubmit)="onSubmit()" #eventForm="ngForm">
         <div class="form-group">
-          <label for="label">Event Name *</label>
+          <label for="label">{{ t('events.eventName') }} *</label>
           <input
             type="text"
             id="label"
@@ -30,7 +31,7 @@ import {Artist} from '../artist';
 
         <div class="form-row">
           <div class="form-group">
-            <label for="startDate">Start Date *</label>
+            <label for="startDate">{{ t('events.startDate') }} *</label>
             <input
               type="date"
               id="startDate"
@@ -41,7 +42,7 @@ import {Artist} from '../artist';
           </div>
 
           <div class="form-group">
-            <label for="endDate">End Date *</label>
+            <label for="endDate">{{ t('events.endDate') }} *</label>
             <input
               type="date"
               id="endDate"
@@ -61,21 +62,21 @@ import {Artist} from '../artist';
         }
 
         <button type="submit" [disabled]="!eventForm.form.valid || isSubmitting()">
-          {{ isSubmitting() ? 'Creating...' : 'Create Event' }}
+          {{ isSubmitting() ? t('events.creating') : t('events.create') }}
         </button>
       </form>
 
       @if (createdEventId()) {
         <section class="artist-section">
-          <h2>Add Artists</h2>
-          <p class="info">Search and add artists to this event</p>
+          <h2>{{ t('events.addArtists') }}</h2>
+          <p class="info">{{ t('events.addArtistsInfo') }}</p>
 
           <div class="search-container">
             <input
               type="text"
               [(ngModel)]="artistSearchTerm"
               (input)="onSearchArtist()"
-              placeholder="Search artist by name..."
+              [placeholder]="t('events.searchArtists')"
               class="search-input"
             />
           </div>
@@ -90,7 +91,7 @@ import {Artist} from '../artist';
                     (click)="addArtistToEvent(artist)"
                     [disabled]="isAddingArtist() || addedArtistIds().includes(artist.id)"
                   >
-                    {{ addedArtistIds().includes(artist.id) ? '✓ Added' : 'Add' }}
+                    {{ addedArtistIds().includes(artist.id) ? t('events.added') : t('events.add') }}
                   </button>
                 </li>
               }
@@ -98,12 +99,12 @@ import {Artist} from '../artist';
           }
 
           @if (artistSearchTerm.length > 0 && artistSearchResults().length === 0 && !isSearching()) {
-            <div class="no-results">No artists found with that name</div>
+            <div class="no-results">{{ t('events.noArtistsFound') }}</div>
           }
 
           @if (addedArtists().length > 0) {
             <div class="added-artists">
-              <h3>Added Artists ({{ addedArtists().length }})</h3>
+              <h3>{{ t('events.addedArtists') }} ({{ addedArtists().length }})</h3>
               <ul>
                 @for (artist of addedArtists(); track artist.id) {
                   <li>{{ artist.label }}</li>
@@ -117,7 +118,7 @@ import {Artist} from '../artist';
           }
 
           <a [routerLink]="['/events', createdEventId()]" class="view-event-link">
-            View Event Details →
+            {{ t('events.viewEventDetails') }}
           </a>
         </section>
       }
@@ -128,6 +129,15 @@ import {Artist} from '../artist';
 export class EventForm {
   private eventsService = inject(EventsService);
   private router = inject(Router);
+  private languageService = inject(LanguageService);
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
+
+  getCurrentLanguage() {
+    return this.languageService.getCurrentLanguage();
+  }
 
   formData = {
     label: '',
@@ -150,16 +160,36 @@ export class EventForm {
   onSubmit(): void {
     this.errorMessage.set('');
     this.successMessage.set('');
+    
+    // Validate name length
+    if (this.formData.label.trim().length < 3) {
+      this.errorMessage.set(this.t('events.nameMinLength'));
+      return;
+    }
+    
+    // Validate dates
+    const startDate = new Date(this.formData.startDate);
+    const endDate = new Date(this.formData.endDate);
+    
+    if (startDate > endDate) {
+      this.errorMessage.set(
+        this.getCurrentLanguage() === 'fr' 
+          ? 'La date de début doit être antérieure à la date de fin.'
+          : 'Start date must be before end date.'
+      );
+      return;
+    }
+    
     this.isSubmitting.set(true);
 
     this.eventsService.createEvent(this.formData).subscribe({
       next: (event) => {
-        this.successMessage.set('Event created successfully! Now you can add artists.');
+        this.successMessage.set(this.t('events.createSuccess'));
         this.createdEventId.set(event.id);
         this.isSubmitting.set(false);
       },
       error: (err) => {
-        this.errorMessage.set('Failed to create event. Please try again.');
+        this.errorMessage.set(this.t('events.createError'));
         this.isSubmitting.set(false);
         console.error('Error creating event:', err);
       },
@@ -200,7 +230,7 @@ export class EventForm {
         this.isAddingArtist.set(false);
       },
       error: (err) => {
-        this.artistError.set(`Failed to add artist "${artist.label}". Please try again.`);
+        this.artistError.set(this.t('events.addArtistError'));
         this.isAddingArtist.set(false);
         console.error('Error adding artist to event:', err);
       },

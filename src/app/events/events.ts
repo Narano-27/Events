@@ -1,8 +1,9 @@
-import {Component, input, signal, output} from '@angular/core';
+import {Component, input, signal, output, inject} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {CommonModule} from '@angular/common';
 import {Event} from '../event';
 import {ArtistsPreview} from '../artists-preview/artists-preview';
+import {LanguageService} from '../language.service';
 @Component({
   selector: 'app-events',
   standalone: true,
@@ -24,10 +25,10 @@ import {ArtistsPreview} from '../artists-preview/artists-preview';
           @if (showMenu()) {
             <div class="dropdown-menu">
               <a [routerLink]="['/events', event().id, 'edit']" (click)="closeMenu()" class="menu-item edit">
-                Edit
+                {{ t('events.edit') }}
               </a>
               <button (click)="onDelete()" class="menu-item delete">
-                Delete
+                {{ t('events.delete') }}
               </button>
             </div>
           }
@@ -36,7 +37,7 @@ import {ArtistsPreview} from '../artists-preview/artists-preview';
       <p class="listing-location">{{ event().startDate }}, {{ event().endDate }}</p>
       <app-artists-preview [artists]="event().artists" />
       <div class="listing-actions">
-        <a [routerLink]="['/events', event().id]">View details</a>
+        <a [routerLink]="['/events', event().id]">{{ t('events.viewDetails') }}</a>
       </div>
     </section>
   `,
@@ -46,8 +47,13 @@ import {ArtistsPreview} from '../artists-preview/artists-preview';
 export class Events {
   event = input.required<Event>();
   delete = output<string>();
+  private languageService = inject(LanguageService);
   
   showMenu = signal(false);
+
+  t(key: string): string {
+    return this.languageService.t(key);
+  }
 
   toggleMenu(): void {
     this.showMenu.update((v) => !v);
@@ -58,7 +64,7 @@ export class Events {
   }
 
   onDelete(): void {
-    if (confirm(`Are you sure you want to delete "${this.event().label}"?`)) {
+    if (confirm(`${this.t('events.deleteConfirm')} "${this.event().label}"?`)) {
       this.closeMenu();
       this.delete.emit(this.event().id);
     }

@@ -65,7 +65,7 @@ export class EventsPage {
   private page$ = new BehaviorSubject<number>(0);
   private eventsService = inject(EventsService);
   currentPage = 0;
-  readonly pageSize = 6;
+  readonly pageSize = 10;
   readonly sort = 'label,asc';
 
   constructor() {
